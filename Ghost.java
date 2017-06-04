@@ -24,7 +24,7 @@ class Ghost extends Character
      * Act method, runs on every frame
      */
     //The speed of the ghost
-    public final double speed = 7;
+    public final double speed = 4;
     //A count incrementing continously 
     public int count = 0;
     //String definition
@@ -40,6 +40,7 @@ class Ghost extends Character
     public boolean intersectionFlag2 = false;
     //To move into what direction
     private String chosenDirection = "";
+    public boolean initialFlag = false;
 
     String directions[] = {
         "up",
@@ -102,13 +103,13 @@ class Ghost extends Character
             if (treeAbove() && treeBelow() && treeToLeft()) {
                 chosenDirection = RIGHT;
             }
-            else if (treeAbove() && treeBelow() && treeToRight()) {
+            if (treeAbove() && treeBelow() && treeToRight()) {
                 chosenDirection = LEFT;
             }
-            else if (treeAbove() && treeToLeft() && treeToRight()) {
+            if (treeAbove() && treeToLeft() && treeToRight()) {
                 chosenDirection = DOWN;
             }
-            else if (treeBelow() && treeToRight() && treeToLeft()) {
+            if (treeBelow() && treeToRight() && treeToLeft()) {
                 chosenDirection = UP;
             }
             //This means that a decision is made so change the direction
@@ -116,33 +117,66 @@ class Ghost extends Character
         }
         else if (intrsctnCount == 2 && treeFront()) {
             // System.out.print(2);
-            if ((treeAbove() && treeBelow()) || (treeAbove() && treeToRight()) || (treeToRight() && treeBelow())) {
+            // if ((treeAbove() && treeBelow()) || (treeAbove() && treeToRight()) || (treeToRight() && treeBelow())) {
+            //     chosenDirection = LEFT;
+            // }
+            // else if ((treeAbove() && treeBelow()) || (treeAbove() && treeToLeft()) || (treeBelow() && treeToLeft())) {
+            //     chosenDirection = RIGHT;
+
+            // }
+            // else if ((treeToLeft() && treeToRight()) || (treeToLeft() && treeBelow()) || (treeToRight() && treeBelow())) {
+            //     chosenDirection = UP;
+            // }
+            // else if ((treeToLeft() && treeToRight()) || (treeAbove() && treeToLeft()) || (treeAbove() && treeToRight())) {
+            //     chosenDirection = DOWN;
+            // }
+            if ((treeAbove() && treeBelow() && isToMyLeft(getClara())) || (treeAbove() && treeToRight() && isToMyLeft(getClara()))) {
                 chosenDirection = LEFT;
             }
-            else if (((treeAbove() && treeBelow()) || (treeAbove() && treeToLeft()) || (treeBelow() && treeToLeft()))) {
+            if ((treeAbove() && treeBelow() && isToMyRight(getClara())) || (treeAbove() && treeToLeft() && isToMyRight(getClara()))) {
                 chosenDirection = RIGHT;
-
             }
-            else if ((treeToLeft() && treeToRight()) || (treeToLeft() && treeBelow()) || (treeToRight() && treeBelow())) {
+            if ((treeToLeft() && treeToRight() && isAboveMe(getClara())) || (treeToLeft() && treeBelow() && isAboveMe(getClara()))) {
                 chosenDirection = UP;
             }
-            else if ((treeToLeft() && treeToRight()) || (treeAbove() && treeToLeft()) || (treeAbove() && treeToRight())) {
+            if ((treeToLeft() && treeToRight() && isBelowMe(getClara())) || (treeAbove() && treeToLeft() && isBelowMe(getClara()))) {
                 chosenDirection = DOWN;
             }
             //This means that a decision is made so change the direction
             intersectionFlag = true;
         }
-        else if (intrsctnCount == 3) {
+        else if (intrsctnCount >= 3) {
             //Select random location
-            chosenDirection = directions[Clara.getRandomNumber(3)];
+            if (initialFlag) {
+                chosenDirection = directions[Clara.getRandomNumber(3)];
+                // initialFlag=false;
+            }
+            else if (isToMyLeft(getClara()) && !treeToLeft()) {
+                chosenDirection = LEFT;
+            }
+            else if (isToMyRight(getClara()) && !treeToRight()) {
+                chosenDirection = RIGHT;
+            }
+            else if (isAboveMe(getClara()) && !treeAbove()) {
+                chosenDirection = UP;
+            }
+            else if (isBelowMe(getClara()) && !treeBelow()) {
+                chosenDirection = DOWN;
+            }
+            // chosenDirection = directions[Clara.getRandomNumber(3)];
             ///To make sure that the intersection has passed from
             if (!intersectionFlag2) {
                 intersectionFlag = true;
                 intersectionFlag2 = true;
             }
         }
+
+        if (intersects(getGhostHealer())) {
+            setDirection(UP);
+            initialFlag = true;
+        }
         //A delay to check the intersection passed
-        if (count % 17 == 0)
+        if (count % 13 == 0)
             intersectionFlag2 = false;
         if (intersectionFlag) {
             setDirection(chosenDirection);
