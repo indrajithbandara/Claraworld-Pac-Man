@@ -68,7 +68,7 @@ public final char[][] LEVEL_1 = {
     public final String DOWN = "down";
     public final String LEFT = "left";
     public final String RIGHT = "right";
-    public final double speed = 10;
+    public final double speed = 6;
     boolean moveFlag = false;
     public int count = 0;
     public boolean newLevel = true;
@@ -94,7 +94,8 @@ public final char[][] LEVEL_1 = {
             playPacmanIntro();
             newLevel = false;
         }
-        //Will true only if the game is not over aor introduction is playing        if (!isPacmanIntroStillPlaying() && !gameOver) {
+        //Will true only if the game is not over aor introduction is playing      
+      if (!isPacmanIntroStillPlaying() && !gameOver) {
         if (!isClaraDead()) {
 
             //Initial Key pressed
@@ -118,9 +119,10 @@ public final char[][] LEVEL_1 = {
             EatingLeavesandWinning();
         }
         else {
-            gameOver = true;
             animateDead();
+            if(!gameOver)
             playClaraDieSound();
+                        gameOver = true;
         }
 
         //Part 10
@@ -130,7 +132,7 @@ public final char[][] LEVEL_1 = {
             makeScared();
         }
     }
-
+    }
 void CheckkeyPressed() {
     if (Keyboard.isKeyDown(UP)) {
         // System.out.println(UP);
